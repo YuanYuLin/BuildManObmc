@@ -1,0 +1,35 @@
+MACHINE ?= "raspberrypi"
+DISTRO ?= "openbmc-phosphor"
+PACKAGE_CLASSES ?= "package_ipk"
+SANITY_TESTED_DISTROS:append ?= " *"
+EXTRA_IMAGE_FEATURES = "debug-tweaks"
+USER_CLASSES ?= "buildstats"
+PATCHRESOLVE = "noop"
+BB_DISKMON_DIRS = "\
+    STOPTASKS,${TMPDIR},1G,100K \
+    STOPTASKS,${DL_DIR},1G,100K \
+    STOPTASKS,${SSTATE_DIR},1G,100K \
+    STOPTASKS,/tmp,100M,100K \
+    HALT,${TMPDIR},100M,1K \
+    HALT,${DL_DIR},100M,1K \
+    HALT,${SSTATE_DIR},100M,1K \
+    HALT,/tmp,10M,1K"
+CONF_VERSION = "2"
+
+SSTATE_DIR ?= "/home/vanish/development/Adam/openbmc-build/sstate-cache"
+DL_DIR ?= "/home/vanish/development/Adam/openbmc-build/downloads"
+
+UBOOT_MACHINE = "rpi_defconfig"
+UBOOT_DEVICETREE = "bcm2835-rpi-b.dts"
+SERIAL_CONSOLES = "115200;ttyAMA0"
+
+ARMSTUB ?= "armstub.bin"
+IMAGE_FSTYPES = "rpi-sdimg cpio.xz squashfs wic"
+RPI_USE_U_BOOT = "1"
+UBOOT_SIGN_ENABLE = "0"
+FLASH_SIZE = "131072"
+INITRAMFS_FSTYPES = "cpio.xz"
+
+OBMC_POWER_SUPPLY_INSTANCES = "0 1"
+#OBMC_ORG_YAML_SUBDIRS += " com/ibm"
+OBMC_ORG_YAML_SUBDIRS += " org/open_power"
