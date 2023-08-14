@@ -16,9 +16,6 @@ BB_DISKMON_DIRS = "\
     HALT,/tmp,10M,1K"
 CONF_VERSION = "2"
 
-SSTATE_DIR ?= "/home/vanish/development/Adam/openbmc-build/sstate-cache"
-DL_DIR ?= "/home/vanish/development/Adam/openbmc-build/downloads"
-
 UBOOT_MACHINE = "rpi_defconfig"
 UBOOT_DEVICETREE = "bcm2835-rpi-b.dts"
 SERIAL_CONSOLES = "115200;ttyAMA0"
