@@ -7,6 +7,5 @@ POWER_SERVICE_PACKAGES_RASPBERRYPI = " \
 
 RDEPENDS:${PN}-extras:append = " \
                                ${POWER_SERVICE_PACKAGES_RASPBERRYPI} \
-                               webui-vue \
                                "
 

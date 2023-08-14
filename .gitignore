@@ -1,3 +1,4 @@
 build_*/*
 obmc_*
 openbmc*
+bitbake-cookerdaemon.log
