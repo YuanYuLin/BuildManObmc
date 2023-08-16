@@ -16,53 +16,60 @@ init_build_env () {
 }
 
 set_local_conf_number_therads () {
+  cpu_count=`lscpu | grep '^CPU(s):' | awk '{print $2}'`
+  MIN_BB_THREADS="4"
+  MAX_BB_THREADS="12"
+  OBMC_VAR=$MIN_BB_THREADS
+  if [ $((cpu_count)) > $((MIN_BB_THREAD)) ] ; then
+    OBMC_VAR=$MAX_BB_THREADS
+  fi
   line=`grep "^BB_NUMBER_THREADS" $OBMC_LOCAL_CONF`
   if [ -n "$line" ]; then
-    sed -i "s#$line#BB_NUMBER_THREADS?=\"$BB_THREADS\"#g" $OBMC_LOCAL_CONF
+    sed -i "s#$line#BB_NUMBER_THREADS?=\"$OBMC_VAR\"#g" $OBMC_LOCAL_CONF
   else
-    echo "BB_NUMBER_THREADS?=\"$BB_THREADS\"" >> $OBMC_LOCAL_CONF
-fi
+    echo "BB_NUMBER_THREADS?=\"$OBMC_VAR\"" >> $OBMC_LOCAL_CONF
+  fi
 }
 
 set_local_conf_sstate_dir () {
-  OBMC_SSTATE_DIR="$TOP_DIR/obmc_sstate"
-  mkdir -p $OBMC_SSTATE_DIR
+  OBMC_VAR="$TOP_DIR/obmc_sstate"
+  mkdir -p $OBMC_VAR_
   line=`grep "^SSTATE_DIR" $OBMC_LOCAL_CONF`
   if [ -n "$line" ]; then
-    sed -i "s#$line#SSTATE_DIR?=\"$OBMC_SSTATE_DIR\"#g" $OBMC_LOCAL_CONF
+    sed -i "s#$line#SSTATE_DIR?=\"$OBMC_VAR\"#g" $OBMC_LOCAL_CONF
   else
-    echo "SSTATE_DIR?=\"$OBMC_SSTATE_DIR\"" >> $OBMC_LOCAL_CONF
+    echo "SSTATE_DIR?=\"$OBMC_VAR\"" >> $OBMC_LOCAL_CONF
   fi
 }
 
 set_local_conf_dl_dir () {
-  OBMC_DL_DIR="$TOP_DIR/obmc_dl"
-  mkdir -p $OBMC_DL_DIR
+  OBMC_VAR="$TOP_DIR/obmc_dl"
+  mkdir -p $OBMC_VAR
   line=`grep "^DL_DIR" $OBMC_LOCAL_CONF`
   if [ -n "$line" ]; then
-    sed -i "s#$line#DL_DIR?=\"$OBMC_DL_DIR\"#g" $OBMC_LOCAL_CONF
+    sed -i "s#$line#DL_DIR?=\"$OBMC_VAR\"#g" $OBMC_LOCAL_CONF
   else
-    echo "DL_DIR?=\"$OBMC_DL_DIR\"" >> $OBMC_LOCAL_CONF
+    echo "DL_DIR?=\"$OBMC_VAR\"" >> $OBMC_LOCAL_CONF
   fi
 }
 
 run_pre_hook () {
-  HOOK_PRE_SCRIPT="$SCRIPT_DIR/build_prehook.sh"
-  if [ ! -f "$HOOK_PRE_SCRIPT" ]; then
-    echo "$HOOK_PRE_SCRIPT not exist"
+  HOOK_SCRIPT="$SCRIPT_DIR/build_prehook.sh"
+  if [ ! -f "$HOOK_SCRIPT" ]; then
+    echo "$HOOK_SCRIPT not exist"
     exit 1
   fi
-  . $HOOK_PRE_SCRIPT
+  . $HOOK_SCRIPT
 }
 
 run_post_hook () {
-  HOOK_POST_SCRIPT="$SCRIPT_DIR/build_posthook.sh"
-  if [ ! -f "$HOOK_POST_SCRIPT" ]; then
-    echo "$HOOK_POST_SCRIPT not exist"
+  HOOK_SCRIPT="$SCRIPT_DIR/build_posthook.sh"
+  if [ ! -f "$HOOK_SCRIPT" ]; then
+    echo "$HOOK_SCRIPT not exist"
     exit 1
   fi
 
-  . $HOOK_POST_SCRIPT $OBMC_BUILD_DIR
+  . $HOOK_SCRIPT $OBMC_BUILD_DIR
 }
 
 run_pre_hook
@@ -72,7 +79,5 @@ init_build_env
 set_local_conf_number_therads
 #set_local_conf_sstate_dir
 set_local_conf_dl_dir
-
-bitbake obmc-phosphor-image
 
 run_post_hook
