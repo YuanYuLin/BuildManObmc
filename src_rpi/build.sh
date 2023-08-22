@@ -1,78 +1,43 @@
 #!/bin/bash
 
-SCRIPT_DIR=`dirname $(realpath "$0")`
+export OBMC_PLATFORM="rpi"
+export SCRIPT_DIR=`dirname $(realpath "$0")`
+export TOP_DIR=`realpath $SCRIPT_DIR/../`
+export WORKSPACE_DIR="$TOP_DIR/workspace"
+
+source $TOP_DIR/libscripts/libbuild.sh
+USER_IP="userid@192.168.70.254"
+
+copy_initramfs () {
+  TFTP_DIR="/srv/tftp"
+  echo "Copying initramfs to $TFTP_DIR"
+  if [ ! -d "$TFTP_DIR" ]; then
+    echo "$TFTP_DIR not exist..."
+    exit 1
+  fi
+  cp -v misc/initramfs.cpio.xz $TFTP_DIR
+}
+
+build_and_copy_images() {
+  bitbake obmc-phosphor-image
+  start_ssh_agent "$HOME/ssh_dir/id_rsa"
+  src_image=("obmc-phosphor-image-raspberrypi.squashfs"	 "uImage"	 "bcm2708-rpi-b-plus.dtb")
+  dst_image=("rootfs.squashfs"				 "uImage"	 "device-tree.dtb")
+  for index in {0..2}
+  do
+    scp $OBMC_BUILD_DIR/tmp/deploy/images/raspberrypi/${src_image[$index]} $USER_IP:/srv/tftp/${dst_image[$index]}
+  done
+  stop_ssh_agent
+}
+
+devtool_modify() {
+  #devtool modify linux-raspberrypi
+  #devtool modify phosphor-power
+  devtool modify entity-manager
+}
+
 cd $SCRIPT_DIR
-
-init_build_env () {
-  echo "Building openbmc platform [$OBMC_PLATFORM] $SCRIPT_DIR"
-  TOP_DIR=`realpath $SCRIPT_DIR/../`
-  OBMC_BUILD_DIR="$TOP_DIR/build_$OBMC_PLATFORM"
-
-  mkdir -p $OBMC_BUILD_DIR
-  export OBMC_LOCAL_CONF="conf/local.conf"
-  OBMC_TEMPLATE="$SCRIPT_DIR/meta-$OBMC_PLATFORM/conf/templates/default"
-  export TEMPLATECONF="$OBMC_TEMPLATE"
-  source oe-init-build-env "$OBMC_BUILD_DIR"
-}
-
-set_local_conf_number_therads () {
-  cpu_count=`lscpu | grep '^CPU(s):' | awk '{print $2}'`
-  MIN_BB_THREADS="4"
-  MAX_BB_THREADS="12"
-  OBMC_VAR=$MIN_BB_THREADS
-  if [ $((cpu_count)) > $((MIN_BB_THREAD)) ] ; then
-    OBMC_VAR=$MAX_BB_THREADS
-  fi
-  line=`grep "^BB_NUMBER_THREADS" $OBMC_LOCAL_CONF`
-  if [ -n "$line" ]; then
-    sed -i "s#$line#BB_NUMBER_THREADS?=\"$OBMC_VAR\"#g" $OBMC_LOCAL_CONF
-  else
-    echo "BB_NUMBER_THREADS?=\"$OBMC_VAR\"" >> $OBMC_LOCAL_CONF
-  fi
-}
-
-set_local_conf_sstate_dir () {
-  OBMC_VAR="$TOP_DIR/obmc_sstate"
-  mkdir -p $OBMC_VAR_
-  line=`grep "^SSTATE_DIR" $OBMC_LOCAL_CONF`
-  if [ -n "$line" ]; then
-    sed -i "s#$line#SSTATE_DIR?=\"$OBMC_VAR\"#g" $OBMC_LOCAL_CONF
-  else
-    echo "SSTATE_DIR?=\"$OBMC_VAR\"" >> $OBMC_LOCAL_CONF
-  fi
-}
-
-set_local_conf_dl_dir () {
-  OBMC_VAR="$TOP_DIR/obmc_dl"
-  mkdir -p $OBMC_VAR
-  line=`grep "^DL_DIR" $OBMC_LOCAL_CONF`
-  if [ -n "$line" ]; then
-    sed -i "s#$line#DL_DIR?=\"$OBMC_VAR\"#g" $OBMC_LOCAL_CONF
-  else
-    echo "DL_DIR?=\"$OBMC_VAR\"" >> $OBMC_LOCAL_CONF
-  fi
-}
-
-run_pre_hook () {
-  HOOK_SCRIPT="$SCRIPT_DIR/build_prehook.sh"
-  if [ ! -f "$HOOK_SCRIPT" ]; then
-    echo "$HOOK_SCRIPT not exist"
-    exit 1
-  fi
-  . $HOOK_SCRIPT
-}
-
-run_post_hook () {
-  HOOK_SCRIPT="$SCRIPT_DIR/build_posthook.sh"
-  if [ ! -f "$HOOK_SCRIPT" ]; then
-    echo "$HOOK_SCRIPT not exist"
-    exit 1
-  fi
-
-  . $HOOK_SCRIPT $OBMC_BUILD_DIR
-}
-
-run_pre_hook
+copy_initramfs
 
 init_build_env
 
@@ -80,4 +45,5 @@ set_local_conf_number_therads
 #set_local_conf_sstate_dir
 set_local_conf_dl_dir
 
-run_post_hook
+build_and_copy_images
+#devtool_modify
