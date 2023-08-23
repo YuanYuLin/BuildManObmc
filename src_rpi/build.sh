@@ -20,6 +20,8 @@ copy_initramfs () {
 
 build_and_copy_images() {
   bitbake obmc-phosphor-image
+  #bitbake -c clean linux-raspberrypi
+  #bitbake -c build linux-raspberrypi
   start_ssh_agent "$HOME/ssh_dir/id_rsa"
   src_image=("obmc-phosphor-image-raspberrypi.squashfs"	 "uImage"	 "bcm2708-rpi-b-plus.dtb")
   dst_image=("rootfs.squashfs"				 "uImage"	 "device-tree.dtb")
@@ -32,12 +34,13 @@ build_and_copy_images() {
 
 devtool_modify() {
   #devtool modify linux-raspberrypi
+  devtool reset linux-raspberrypi
   #devtool modify phosphor-power
-  devtool modify entity-manager
+  #devtool modify entity-manager
 }
 
 cd $SCRIPT_DIR
-copy_initramfs
+#copy_initramfs
 
 init_build_env
 

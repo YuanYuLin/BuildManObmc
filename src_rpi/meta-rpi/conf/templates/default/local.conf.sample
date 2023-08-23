@@ -21,11 +21,11 @@ UBOOT_DEVICETREE = "bcm2835-rpi-b.dts"
 SERIAL_CONSOLES = "115200;ttyAMA0"
 
 ARMSTUB ?= "armstub.bin"
-IMAGE_FSTYPES = "rpi-sdimg cpio.xz squashfs wic"
+IMAGE_FSTYPES = "squashfs"
 RPI_USE_U_BOOT = "1"
+ENABLE_UART = "1"
 UBOOT_SIGN_ENABLE = "0"
 FLASH_SIZE = "131072"
-INITRAMFS_FSTYPES = "cpio.xz"
 
 OBMC_POWER_SUPPLY_INSTANCES = "0 1"
 #OBMC_ORG_YAML_SUBDIRS += " com/ibm"

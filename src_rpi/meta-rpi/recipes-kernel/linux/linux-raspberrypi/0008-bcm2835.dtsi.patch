@@ -1,0 +1,43 @@
+diff --git a/arch/arm/boot/dts/bcm2835.dtsi b/arch/arm/boot/dts/bcm2835.dtsi
+index 1c90e5a44283..52c19c060ec5 100644
+--- a/arch/arm/boot/dts/bcm2835.dtsi
++++ b/arch/arm/boot/dts/bcm2835.dtsi
+@@ -53,3 +53,38 @@ &thermal {
+ 	compatible = "brcm,bcm2835-thermal";
+ 	status = "okay";
+ };
++
++&i2c1 {
++        status = "okay";
++
++        power-supply@58 {
++                compatible = "lenovo,crps";
++                reg = <0x58>;
++        };
++
++        power-supply@59 {
++                compatible = "lenovo,crps";
++                reg = <0x59>;
++        };
++
++        power-supply@5a {
++                compatible = "lenovo,crps";
++                reg = <0x5a>;
++        };
++
++        power-supply@5b {
++                compatible = "lenovo,crps";
++                reg = <0x5b>;
++        };
++
++        power-supply@68 {
++                compatible = "lenovo,cff4";
++                reg = <0x68>;
++        };
++
++        power-supply@69 {
++                compatible = "lenovo,cff4";
++                reg = <0x69>;
++        };
++};
++
