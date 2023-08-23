@@ -21,7 +21,8 @@ set_local_conf_number_therads () {
   MIN_BB_THREADS="4"
   MAX_BB_THREADS="12"
   OBMC_VAR=$MIN_BB_THREADS
-  if [ $((cpu_count)) > $((MIN_BB_THREAD)) ] ; then
+  echo "CPU count = $cpu_count[MIN:MAX=$MIN_BB_THREADS:$MAX_BB_THREADS]"
+  if [ $((cpu_count)) -gt $((MIN_BB_THREADS)) ] ; then
     OBMC_VAR=$MAX_BB_THREADS
   fi
   line=`grep "^BB_NUMBER_THREADS" $OBMC_LOCAL_CONF`
