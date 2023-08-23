@@ -15,7 +15,7 @@ copy_initramfs () {
     echo "$TFTP_DIR not exist..."
     exit 1
   fi
-  cp -v misc/initramfs.cpio.xz $TFTP_DIR
+  cp -v $TOPDIR/misc/initramfs.cpio.xz $TFTP_DIR
 }
 
 build_and_copy_images() {
@@ -40,6 +40,7 @@ cd $SCRIPT_DIR
 #copy_initramfs
 
 init_build_env
+#init_workspace
 
 set_local_conf_number_therads
 #set_local_conf_sstate_dir

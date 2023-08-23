@@ -4,19 +4,21 @@ export OBMC_LOCAL_CONF="conf/local.conf"
 export OBMC_BUILD_DIR="$TOP_DIR/build_$OBMC_PLATFORM"
 export WORKSPACE_DIR="$TOP_DIR/workspace"
 
-init_build_env () {
+init_build_env() {
   echo "Building openbmc platform [$OBMC_PLATFORM] $SCRIPT_DIR"
 
   mkdir -p $OBMC_BUILD_DIR
   OBMC_TEMPLATE="$SCRIPT_DIR/meta-$OBMC_PLATFORM/conf/templates/default"
   export TEMPLATECONF="$OBMC_TEMPLATE"
   source oe-init-build-env "$OBMC_BUILD_DIR"
+}
 
+init_workspace() {
   mkdir -p $WORKSPACE_DIR
   devtool create-workspace $WORKSPACE_DIR
 }
 
-set_local_conf_number_therads () {
+set_local_conf_number_therads() {
   cpu_count=`lscpu | grep '^CPU(s):' | awk '{print $2}'`
   MIN_BB_THREADS="4"
   MAX_BB_THREADS="12"
@@ -33,7 +35,7 @@ set_local_conf_number_therads () {
   fi
 }
 
-set_local_conf_sstate_dir () {
+set_local_conf_sstate_dir() {
   OBMC_VAR="$TOP_DIR/obmc_sstate"
   mkdir -p $OBMC_VAR_
   line=`grep "^SSTATE_DIR" $OBMC_LOCAL_CONF`
@@ -44,7 +46,7 @@ set_local_conf_sstate_dir () {
   fi
 }
 
-set_local_conf_dl_dir () {
+set_local_conf_dl_dir() {
   OBMC_VAR="$TOP_DIR/obmc_dl"
   mkdir -p $OBMC_VAR
   line=`grep "^DL_DIR" $OBMC_LOCAL_CONF`
