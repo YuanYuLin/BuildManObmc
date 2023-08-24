@@ -8,7 +8,7 @@ init_build_env() {
   echo "Building openbmc platform [$OBMC_PLATFORM] $SCRIPT_DIR"
 
   mkdir -p $OBMC_BUILD_DIR
-  OBMC_TEMPLATE="$SCRIPT_DIR/meta-$OBMC_PLATFORM/conf/templates/default"
+  OBMC_TEMPLATE="$SCRIPT_DIR/$OBMC_PLATFORM/conf/templates/default"
   export TEMPLATECONF="$OBMC_TEMPLATE"
   source oe-init-build-env "$OBMC_BUILD_DIR"
 }

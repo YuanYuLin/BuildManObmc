@@ -1,6 +1,14 @@
 #!/bin/bash
 
-export OBMC_PLATFORM="rpi"
+if [ $# -eq 1 ]; then 
+  ARG1=${@%/}
+else
+  echo "build.sh <meta-platform>"
+  echo "ARGS not correct..."
+  exit 1
+fi
+
+export OBMC_PLATFORM="$ARG1"
 export SCRIPT_DIR=`dirname $(realpath "$0")`
 export TOP_DIR=`realpath $SCRIPT_DIR/../`
 export WORKSPACE_DIR="$TOP_DIR/workspace"
@@ -23,9 +31,9 @@ build_and_copy_images() {
   #bitbake -c clean linux-raspberrypi
   #bitbake -c build linux-raspberrypi
   start_ssh_agent "$HOME/ssh_dir/id_rsa"
-  src_image=("obmc-phosphor-image-raspberrypi.squashfs"	 "uImage"	 "bcm2708-rpi-b-plus.dtb")
-  dst_image=("rootfs.squashfs"				 "uImage"	 "device-tree.dtb")
-  for index in {0..2}
+  src_image=("obmc-phosphor-image-raspberrypi.squashfs"	 "uImage"	 "bcm2708-rpi-b-plus.dtb"	"fitImage")
+  dst_image=("rootfs.squashfs"				 "uImage"	 "device-tree.dtb"		"fitImage")
+  for index in {0..3}
   do
     scp $OBMC_BUILD_DIR/tmp/deploy/images/raspberrypi/${src_image[$index]} $USER_IP:/srv/tftp/${dst_image[$index]}
   done
@@ -43,7 +51,7 @@ cd $SCRIPT_DIR
 #copy_initramfs
 
 init_build_env
-init_workspace
+#init_workspace
 
 set_local_conf_number_therads
 #set_local_conf_sstate_dir
