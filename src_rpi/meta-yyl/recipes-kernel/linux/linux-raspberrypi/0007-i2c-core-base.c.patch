@@ -1,0 +1,108 @@
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index 7539b0740351..c0fba4da431c 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -470,41 +470,50 @@ static int i2c_device_probe(struct device *dev)
+ 	bool do_power_on;
+ 	int status;
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	if (!client)
+ 		return 0;
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	client->irq = client->init_irq;
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	if (!client->irq) {
+ 		int irq = -ENOENT;
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 		if (client->flags & I2C_CLIENT_HOST_NOTIFY) {
+ 			dev_dbg(dev, "Using Host Notify IRQ\n");
+ 			/* Keep adapter active when Host Notify is required */
+ 			pm_runtime_get_sync(&client->adapter->dev);
+ 			irq = i2c_smbus_host_notify_to_irq(client);
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 		} else if (dev->of_node) {
+ 			irq = of_irq_get_byname(dev->of_node, "irq");
+ 			if (irq == -EINVAL || irq == -ENODATA)
+ 				irq = of_irq_get(dev->of_node, 0);
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 		} else if (ACPI_COMPANION(dev)) {
+ 			bool wake_capable;
+ 
+ 			irq = i2c_acpi_get_irq(client, &wake_capable);
+ 			if (irq > 0 && wake_capable)
+ 				client->flags |= I2C_CLIENT_WAKE;
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 		}
+ 		if (irq == -EPROBE_DEFER) {
+ 			status = irq;
+ 			goto put_sync_adapter;
+ 		}
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 		if (irq < 0)
+ 			irq = 0;
+ 
+ 		client->irq = irq;
+ 	}
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	driver = to_i2c_driver(dev->driver);
+ 
+ 	/*
+@@ -518,6 +527,7 @@ static int i2c_device_probe(struct device *dev)
+ 		goto put_sync_adapter;
+ 	}
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	if (client->flags & I2C_CLIENT_WAKE) {
+ 		int wakeirq;
+ 
+@@ -540,17 +550,20 @@ static int i2c_device_probe(struct device *dev)
+ 			dev_warn(&client->dev, "failed to set up wakeup irq\n");
+ 	}
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	dev_dbg(dev, "probe\n");
+ 
+ 	status = of_clk_set_defaults(dev->of_node, false);
+ 	if (status < 0)
+ 		goto err_clear_wakeup_irq;
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	do_power_on = !i2c_acpi_waive_d0_probe(dev);
+ 	status = dev_pm_domain_attach(&client->dev, do_power_on);
+ 	if (status)
+ 		goto err_clear_wakeup_irq;
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	client->devres_group_id = devres_open_group(&client->dev, NULL,
+ 						    GFP_KERNEL);
+ 	if (!client->devres_group_id) {
+@@ -558,6 +571,7 @@ static int i2c_device_probe(struct device *dev)
+ 		goto err_detach_pm_domain;
+ 	}
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	/*
+ 	 * When there are no more users of probe(),
+ 	 * rename probe_new to probe.
+@@ -570,6 +584,7 @@ static int i2c_device_probe(struct device *dev)
+ 	else
+ 		status = -EINVAL;
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	/*
+ 	 * Note that we are not closing the devres group opened above so
+ 	 * even resources that were attached to the device after probe is
+@@ -581,6 +596,7 @@ static int i2c_device_probe(struct device *dev)
+ 	if (status)
+ 		goto err_release_driver_resources;
+ 
++	printk("ADAM %s(%d)\n", __func__, __LINE__);
+ 	return 0;
+ 
+ err_release_driver_resources:

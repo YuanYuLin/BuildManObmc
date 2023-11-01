@@ -1,0 +1,44 @@
+diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
+index d2d9c6e67f39..e285a535bf0f 100644
+--- a/arch/arm/boot/dts/bcm283x.dtsi
++++ b/arch/arm/boot/dts/bcm283x.dtsi
+@@ -461,7 +461,38 @@ i2c1: i2c@7e804000 {
+ 			clocks = <&clocks BCM2835_CLOCK_VPU>;
+ 			#address-cells = <1>;
+ 			#size-cells = <0>;
+-			status = "disabled";
++			status = "okay";
++
++			power-supply@58 {
++				compatible = "lenovo,crps";
++				reg = <0x58>;
++			};
++
++			power-supply@59 {
++				compatible = "lenovo,crps";
++				reg = <0x59>;
++			};
++
++			power-supply@5a {
++				compatible = "lenovo,crps";
++				reg = <0x5a>;
++			};
++
++			power-supply@5b {
++				compatible = "lenovo,crps";
++				reg = <0x5b>;
++			};
++
++			power-supply@68 {
++				compatible = "lenovo,cff4";
++				reg = <0x68>;
++			};
++
++			power-supply@69 {
++				compatible = "lenovo,cff4";
++				reg = <0x69>;
++			};
++
+ 		};
+ 
+ 		usb: usb@7e980000 {

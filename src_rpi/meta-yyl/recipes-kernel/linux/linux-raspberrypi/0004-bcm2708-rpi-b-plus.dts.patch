@@ -1,0 +1,42 @@
+diff --git a/arch/arm/boot/dts/bcm2708-rpi-b-plus.dts b/arch/arm/boot/dts/bcm2708-rpi-b-plus.dts
+index 9839960c753f..d221e972cf29 100644
+--- a/arch/arm/boot/dts/bcm2708-rpi-b-plus.dts
++++ b/arch/arm/boot/dts/bcm2708-rpi-b-plus.dts
+@@ -144,6 +144,37 @@ &i2c1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2c1_pins>;
+ 	clock-frequency = <100000>;
++        status = "okay";
++
++        power-supply@58 {
++                compatible = "lenovo,crps";
++                reg = <0x58>;
++        };
++
++        power-supply@59 {
++                compatible = "lenovo,crps";
++                reg = <0x59>;
++        };
++
++        power-supply@5a {
++                compatible = "lenovo,crps";
++                reg = <0x5a>;
++        };
++
++        power-supply@5b {
++                compatible = "lenovo,crps";
++                reg = <0x5b>;
++        };
++
++        power-supply@68 {
++                compatible = "lenovo,cff4";
++                reg = <0x68>;
++        };
++
++        power-supply@69 {
++                compatible = "lenovo,cff4";
++                reg = <0x69>;
++        };
+ };
+ 
+ &i2c2 {

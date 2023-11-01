@@ -1,0 +1,20 @@
+diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+index 89668af67206..f75d46c7048f 100644
+--- a/drivers/hwmon/pmbus/Kconfig
++++ b/drivers/hwmon/pmbus/Kconfig
+@@ -96,6 +96,15 @@ config SENSORS_IBM_CFFPS
+ 	  This driver can also be built as a module. If so, the module will
+ 	  be called ibm-cffps.
+ 
++config SENSORS_LENOVO_PS
++	tristate "LENOVO Power Supply"
++	help
++	  If you say yes here you get hardware monitoring support for the 
++	  LENOVO power supply.
++
++	  This driver can also be built as a module. If so, the module will
++	  be called lenovo-ps.
++
+ config SENSORS_DPS920AB
+ 	tristate "Delta DPS920AB Power Supply"
+ 	help

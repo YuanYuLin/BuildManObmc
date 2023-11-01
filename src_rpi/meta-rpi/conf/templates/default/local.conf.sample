@@ -21,7 +21,7 @@ UBOOT_DEVICETREE = "bcm2835-rpi-b.dts"
 SERIAL_CONSOLES = "115200;ttyAMA0"
 
 ARMSTUB ?= "armstub.bin"
-IMAGE_FSTYPES = "squashfs"
+IMAGE_FSTYPES = "ext3 tar.bz2 squashfs"
 RPI_USE_U_BOOT = "1"
 ENABLE_UART = "1"
 UBOOT_SIGN_ENABLE = "0"
